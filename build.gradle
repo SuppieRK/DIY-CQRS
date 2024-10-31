@@ -1,0 +1,141 @@
+import java.nio.charset.StandardCharsets
+
+plugins {
+	// IDE
+	id 'idea'
+
+	// Language
+	id 'java'
+	id 'java-library'
+
+	// Publishing
+	id 'com.vanniktech.maven.publish' version '0.30.0'
+
+	// Utility
+	id 'jacoco'
+	id 'info.solidsoft.pitest' version '1.15.0'
+	id 'org.sonarqube' version '5.1.0.4882'
+	id 'com.diffplug.spotless' version '6.25.0'
+}
+
+// Skipping any 'mavenPlainJavadocJar' task added by 'java' plugin
+tasks.whenTaskAdded { task ->
+	if (task.name.contains('mavenPlainJavadocJar')) {
+		task.enabled = false
+	}
+}
+
+// Project properties
+group = "$GROUP"
+version = "$VERSION_NAME"
+
+repositories {
+	mavenCentral()
+}
+
+// Common dependencies
+dependencies {
+	// https://mvnrepository.com/artifact/org.jooq/jooq
+	api group: 'org.jooq', name: 'jooq', version: '3.19.14'
+
+	// https://mvnrepository.com/artifact/io.github.suppierk/java-throwable-utils
+	implementation group: 'io.github.suppierk', name: 'java-throwable-utils', version: '2.0.0'
+
+	// https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter
+	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.11.3'
+
+	// https://mvnrepository.com/artifact/com.h2database/h2
+	testImplementation group: 'com.h2database', name: 'h2', version: '2.3.232'
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_17.toString()
+	targetCompatibility = JavaVersion.VERSION_17.toString()
+	compileJava.options.encoding = StandardCharsets.UTF_8.name()
+
+	withSourcesJar()
+	withJavadocJar()
+
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+// Configure several tasks additionally for Gradle
+test {
+	useJUnitPlatform()
+
+	// Report is always generated after tests run
+	finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+	// Tests are required to run before generating the report
+	dependsOn test
+
+	reports {
+		html.required = true
+		xml.required = true
+		csv.required = false
+	}
+}
+
+pitest {
+	pitestVersion = '1.17.0'
+	junit5PluginVersion = '1.2.1'
+	outputFormats = ['XML', 'HTML']
+	exportLineCoverage = true
+	threads = 4
+}
+
+build {
+	// When making pitest depend on another task, it must be referred to by name.
+	// Otherwise Gradle will resolve pitest to the configuration and not the task.
+	dependsOn 'pitest'
+}
+
+// Enable Spotless code formatting rules
+spotless {
+	java {
+		target '**/src/*/java/**/*.java'
+
+		// Aligns with Intellij IDEA default settings
+		toggleOffOn('@formatter:off', '@formatter:on')
+
+		googleJavaFormat()
+	}
+
+	sql {
+		target '**/src/*/resources/**/*.sql'
+
+		dbeaver().configFile('dbeaver.properties')
+	}
+
+	groovyGradle {
+		target '**/*.gradle'
+
+		greclipse()
+	}
+
+	lineEndings = 'UNIX'
+}
+
+sonar {
+	properties {
+		property "sonar.projectKey", "SuppieRK_DIY-CQRS"
+		property "sonar.organization", "suppierk"
+		property "sonar.host.url", "https://sonarcloud.io"
+
+		property "sonar.coverage.jacoco.xmlReportPaths", jacocoTestReport.reports.xml.outputLocation.get().asFile
+	}
+}
+
+// Configure several tasks additionally for Gradle
+tasks.withType(Copy).configureEach {
+	duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = StandardCharsets.UTF_8.name()
+	dependsOn(spotlessJavaCheck)
+}
