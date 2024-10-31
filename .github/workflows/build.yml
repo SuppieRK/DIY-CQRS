@@ -59,7 +59,7 @@ jobs:
           skip_check_run: false
           minimum_coverage: 80
           fail_below_threshold: true
-          publish_only_summary: false
+          publish_only_summary: true
 
       - name: Publish Pitest Report
         uses: Bonajo/pitest-report-action@v0.7
