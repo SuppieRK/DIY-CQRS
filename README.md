@@ -9,6 +9,8 @@
 
 Please visit [Wiki](https://github.com/SuppieRK/DIY-CQRS/wiki) for comprehensive project overview.
 
+See [example project which uses this library](https://github.com/SuppieRK/DIY-CQRS-Javalin).
+
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-orange.svg)](https://sonarcloud.io/summary/overall?id=SuppieRK_DIY-CQRS)
 
 ## Usage
