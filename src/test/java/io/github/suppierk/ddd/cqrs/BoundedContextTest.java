@@ -300,25 +300,6 @@ class BoundedContextTest {
     }
 
     @Test
-    void when_update_model_argument_has_id_new_record_should_be_created() {
-      final var command =
-          new DomainCommandHandlerTest.Update.TestDomainCommand(
-              TEST_TABLE.ID.eq(testRecord.getId()));
-      final var result = assertDoesNotThrow(() -> testContext.updateModel(command));
-
-      assertFalse(testContext.isAnyReadLockHeld());
-      assertNotNull(result);
-      assertTrue(result.isPresent());
-      assertNotEquals(
-          testRecord.getCreatedAt(),
-          DSL_CONTEXT
-              .selectFrom(TEST_TABLE)
-              .where(TEST_TABLE.ID.eq(testRecord.getId()))
-              .fetchOne()
-              .getCreatedAt());
-    }
-
-    @Test
     void when_update_model_argument_has_condition_new_record_should_be_created() {
       final var command =
           new DomainCommandHandlerTest.Update.TestDomainCommand(
@@ -365,25 +346,6 @@ class BoundedContextTest {
           new DomainCommandHandlerTest.BatchUpdate.TestDomainCommand(DSL.falseCondition());
       assertThrows(
           IllegalArgumentException.class, () -> testContext.batchUpdateModels(falseCondition));
-    }
-
-    @Test
-    void when_batch_update_model_argument_has_id_new_record_should_be_created() {
-      final var command =
-          new DomainCommandHandlerTest.BatchUpdate.TestDomainCommand(
-              TEST_TABLE.ID.eq(testRecord.getId()));
-      final var result = assertDoesNotThrow(() -> testContext.batchUpdateModels(command));
-
-      assertFalse(testContext.isAnyReadLockHeld());
-      assertNotNull(result);
-      assertEquals(1, result.size());
-      assertNotEquals(
-          testRecord.getCreatedAt(),
-          DSL_CONTEXT
-              .selectFrom(TEST_TABLE)
-              .where(TEST_TABLE.ID.eq(testRecord.getId()))
-              .fetchOne()
-              .getCreatedAt());
     }
 
     @Test
@@ -441,25 +403,6 @@ class BoundedContextTest {
     }
 
     @Test
-    void when_delete_model_argument_has_id_new_record_should_be_created() {
-      final var command =
-          new DomainCommandHandlerTest.Delete.TestDomainCommand(
-              TEST_TABLE.ID.eq(testRecord.getId()));
-      final var result = assertDoesNotThrow(() -> testContext.deleteModel(command));
-
-      assertFalse(testContext.isAnyReadLockHeld());
-      assertNotNull(result);
-      assertTrue(result.isPresent());
-      assertEquals(
-          0,
-          DSL_CONTEXT
-              .selectCount()
-              .from(TEST_TABLE)
-              .where(TEST_TABLE.ID.eq(testRecord.getId()))
-              .fetchOne(0, int.class));
-    }
-
-    @Test
     void when_delete_model_argument_has_condition_new_record_should_be_created() {
       final var command =
           new DomainCommandHandlerTest.Delete.TestDomainCommand(
@@ -506,25 +449,6 @@ class BoundedContextTest {
           new DomainCommandHandlerTest.BatchDelete.TestDomainCommand(DSL.falseCondition());
       assertThrows(
           IllegalArgumentException.class, () -> testContext.batchDeleteModels(falseCondition));
-    }
-
-    @Test
-    void when_batch_delete_model_argument_has_id_new_record_should_be_created() {
-      final var command =
-          new DomainCommandHandlerTest.BatchDelete.TestDomainCommand(
-              TEST_TABLE.ID.eq(testRecord.getId()));
-      final var result = assertDoesNotThrow(() -> testContext.batchDeleteModels(command));
-
-      assertFalse(testContext.isAnyReadLockHeld());
-      assertNotNull(result);
-      assertEquals(1, result.size());
-      assertEquals(
-          0,
-          DSL_CONTEXT
-              .selectCount()
-              .from(TEST_TABLE)
-              .where(TEST_TABLE.ID.eq(testRecord.getId()))
-              .fetchOne(0, int.class));
     }
 
     @Test
