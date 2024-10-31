@@ -50,7 +50,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: JaCoCo Code Coverage Report
-        uses: PavanMudigonda/jacoco-reporter@v5.0
+        uses: PavanMudigonda/jacoco-reporter@v5.1
         with:
           coverage_results_path: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
           coverage_report_name: Coverage
