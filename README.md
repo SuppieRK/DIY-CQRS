@@ -6,3 +6,25 @@
 > I maintain this project alone and as much or as little as my **spare time** permits using my **personal** equipment.
 
 ## Overview
+
+Please visit [Wiki](https://github.com/SuppieRK/DIY-CQRS/wiki) for comprehensive project overview.
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-orange.svg)](https://sonarcloud.io/summary/new_code?id=SuppieRK_DIY-CQRS)
+
+## Usage
+
+### Maven
+
+```xml
+<dependency>
+    <groupId>io.github.suppierk.ddd</groupId>
+    <artifactId>cqrs</artifactId>
+    <version>1.319.0</version>
+</dependency>
+```
+
+### Gradle
+
+```groovy
+implementation 'io.github.suppierk.ddd:cqrs:1.319.0'
+```
