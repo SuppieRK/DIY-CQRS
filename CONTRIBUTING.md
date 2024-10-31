@@ -8,7 +8,7 @@ Please note we have a code of conduct — follow it in all your interactions wit
 ## How to build the project locally?
 
 ```shell
-./gradlew clean spotlessApply build
+./gradlew clean spotlessApply build jacocoTestReport pitest
 ```
 
 ## Pull Request Process
