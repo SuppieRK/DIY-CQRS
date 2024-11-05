@@ -36,7 +36,7 @@ repositories {
 // Common dependencies
 dependencies {
 	// https://mvnrepository.com/artifact/org.jooq/jooq
-	api group: 'org.jooq', name: 'jooq', version: '3.19.14'
+	api group: 'org.jooq', name: 'jooq', version: '3.19.15'
 
 	// https://mvnrepository.com/artifact/io.github.suppierk/java-throwable-utils
 	implementation group: 'io.github.suppierk', name: 'java-throwable-utils', version: '2.0.0'
